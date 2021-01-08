@@ -1,0 +1,1321 @@
+/*
+ * SETUP
+ * Use this section to set up the widget.
+ * ======================================
+ */
+
+// To use weather, get a free API key at openweathermap.org/appid and paste it in between the quotation marks.
+const apiKey = "7630f8d12cb8e15df8f949372406d0d7"
+
+// Set the locale code. Leave blank "" to match the device's locale. You can change the hard-coded text strings in the TEXT section below.
+let locale = "en"
+
+// Set to true for fixed location, false to update location as you move around
+const lockLocation = true
+
+// The size of the widget preview in the app.
+const widgetPreview = "medium"
+
+// Set to true for an image background, false for no image.
+const imageBackground = true
+
+// Set to true to reset the widget's background image.
+const forceImageUpdate = true
+
+// Set the padding around each item. Default is 5.
+const padding = 5
+
+// Decide if icons should match the color of the text around them.
+const tintIcons = false
+
+/*
+ * LAYOUT
+ * Decide what items to show on the widget.
+ * ========================================
+ */
+
+
+
+
+// NEW LAYOUT
+// NEW LAYOUT
+// NEW LAYOUT
+
+// Variables used by Scriptable.
+// These must be at the very top of the file. Do not edit.
+// icon-color: orange; icon-glyph: magic;
+
+/*=============================================================================
+ * CONSTANTS
+ ============================================================================*/
+
+ Date.prototype.addHours = function (numHours) {
+  const date = new Date(this.valueOf());
+  date.setHours(date.getHours() + numHours);
+  return date;
+};
+
+Date.prototype.addMinutes = function (numMinutes) {
+  const date = new Date(this.valueOf());
+  date.setMinutes(date.getMinutes() + numMinutes);
+  return date;
+};
+
+
+/*=============================================================================
+ * WIDGET CONFIGURATIONS *** CONFIGURE ME!!! ***
+ ============================================================================*/
+
+// Example: 12 PM
+const HOUR_FORMAT = new Intl.DateTimeFormat('en-US', {
+  hour: 'numeric',
+});
+
+// Example: Saturday
+const DAY_OF_WEEK_FORMAT = new Intl.DateTimeFormat('en-US', {
+  weekday: 'long',
+});
+
+// Example: 12
+const DAY_OF_MONTH_FORMAT = new Intl.DateTimeFormat('en-US', {
+  day: 'numeric',
+});
+
+
+/**
+ * Widget confugurations. Edit these to customize the widget.
+ */
+const WIDGET_CONFIGURATIONS = {
+  // Number of hours to show in the agenda
+  numHours: 6,
+
+  // Calendars to show events from. Empty array means all calendars.
+  // Calendar names can be found in the "Calendar" App. The name must be an exact string match.
+  calendars: [],
+
+  // Calendar callback app
+  // When clicking on the widget, which calendar app should open?
+  // Must be one of the supported apps:
+  //   - calshow - Default iOS Calendar
+  //   - googlecalendar - Google Calendar
+  //   - x-fantastical3 - Fantastical
+  callbackCalendarApp: 'calshow', 
+
+  // Whether or not to use a background image for the widget
+  useBackgroundImage: false,
+
+  // If no background, default grayish background color gradient
+  backgroundColor: [new Color("#29323c"), new Color("#1c1c1c")],
+
+  // Font to use in Widget
+  font: 'Arial',
+
+  // Bold Font to use in Widget
+  fontBold: 'Heavy',
+
+  // Default text size in Widget
+  defaultTextSize: 10,
+
+  // Larger text size in Widget
+  largeTextSize: 20,
+
+  // Default text color in Widget
+  defaultTextColor: new Color("1ca9c9"),
+
+  // Default spacing between elements
+  defaultSpacer: 10,
+
+  // Smaller spacing between elements
+  smallSpacer: 5,
+
+  // Height of Widget's Draw Context
+  widgetHeight: 400,
+
+  // Width of Widget's Draw Context
+  widgetWidth: 375,
+
+  // Default padding in Draw Context
+  padding: 10,
+
+  // Left padding of events in Draw Context
+  eventsLeftPadding: 80,
+
+  // Corner radius of events in Draw Context
+  eventsRounding: 10,
+
+  // Text color of event titles
+  eventsTextColor: Color.black(),
+
+  // Thickness of hour/now line
+  lineHeight: 5,
+
+  // Color of hour/half-hour line
+  lineColor: new Color('#ffffff', 0.6),
+};
+
+
+
+
+
+
+
+
+// You always need to start with "row," and "column," items, but you can now add as many as you want.
+// Adding left, right, or center will align everything after that. The default alignment is left.
+
+// You can add a flexible vertical space with "space," or a fixed-size space like this: "space(50)"
+// Align items to the top or bottom of columns by adding "space," before or after all items in the column.
+
+// There are many possible items, including: date, greeting, events, current, future, battery, sunrise, and text("Your text here")
+// Make sure to always put a comma after each item.
+
+const items = [
+  
+  row,
+     column,
+    space(20),
+     date,
+    space(15),
+     events,
+  
+  column(175),
+  space(30),
+    rightsideevents,
+     
+  
+]
+
+/*
+ * ITEM SETTINGS
+ * Choose how each item is displayed.
+ * ==================================
+ */  
+ 
+// DATE
+// ====
+const dateSettings = {
+
+  // If set to true, date will become smaller when events are displayed.
+  dynamicDateSize: false
+
+  // If the date is not dynamic, should it be large or small?
+  ,staticDateSize: "large"
+
+  // Determine the date format for each date type. See docs.scriptable.app/dateformatter
+  ,smallDateFormat: "EEEE, MMMM d"
+  ,largeDateLineOne: "EEEE"
+  ,largeDateLineTwo: "MMMM d"
+}
+
+// EVENTS
+// ======
+const eventSettings = {
+
+  // How many events to show.
+  numberOfEvents: 2
+
+  // Show all-day events.
+  ,showAllDay: true
+
+  // Show tomorrow's events.
+  ,showTomorrow: true
+
+  // Can be blank "" or set to "duration" or "time" to display how long an event is.
+  ,showEventLength: "duration"
+
+  // Set which calendars for which to show events. Empty [] means all calendars.
+  ,selectCalendars: []
+
+  // Leave blank "" for no color, or specify shape (circle, rectangle) and/or side (left, right).
+  ,showCalendarColor: "rectangle left"
+  
+  // When no events remain, show a hard-coded "message", a "greeting", or "none".
+  ,noEventBehavior: "message"
+}
+
+// REMINDERS
+// =========
+
+
+// SUNRISE
+// =======
+
+
+// WEATHER
+// =======
+
+
+/*
+ * TEXT
+ * Change the language and formatting of text displayed.
+ * =====================================================
+ */  
+ 
+// You can change the language or wording of any text in the widget.
+const localizedText = {
+  
+  // The text shown if you add a greeting item to the layout.
+  nightGreeting: ""
+  ,morningGreeting: ""
+  ,afternoonGreeting: ""
+  ,eveningGreeting: ""
+  
+  // The text shown if you add a future weather item to the layout, or tomorrow's events.
+  ,nextHourLabel: "Next hour"
+  ,tomorrowLabel: "Tomorrow"
+
+  // Shown when noEventBehavior is set to "message".
+  ,noEventMessage: "No more events today"
+  
+  // The text shown after the hours and minutes of an event duration.
+  ,durationMinute: "m"
+  ,durationHour: "h"
+     
+}
+
+// Set the font, size, and color of various text elements. Use iosfonts.com to find fonts to use. If you want to use the default iOS font, set the font name to one of the following: ultralight, light, regular, medium, semibold, bold, heavy, black, or italic.
+const textFormat = {
+  
+  // Set the default font and color.
+  defaultText: { size: 14, color: "ffffff", font: "regular" },
+  
+  // Any blank values will use the default.
+  smallDate:   { size: 17, color: "", font: "semibold" },
+  largeDate1:  { size: 17, color: "f7cf8f", font: "semibold" },
+  largeDate2:  { size: 17, color: "", font: "light" },
+  
+  greeting:    { size: 30, color: "", font: "semibold" },
+  eventLabel:  { size: 10, color: "f7cf8f", font: "semibold" },
+  eventTitle:  { size: 14, color: "", font: "semibold" },
+  eventTime:   { size: 12, color: "ffffffcc", font: "" },
+  noEvents:    { size: 14, color: "", font: "semibold" },
+  
+  largeTemp:   { size: 34, color: "", font: "light" },
+  smallTemp:   { size: 14, color: "", font: "" },
+  tinyTemp:    { size: 12, color: "", font: "" },
+  
+  customText:  { size: 14, color: "", font: "" },
+  
+  battery:     { size: 14, color: "", font: "medium" },
+  sunrise:     { size: 14, color: "", font: "medium" },
+}
+
+/*
+ * WIDGET CODE
+ * Be more careful editing this section. 
+ * =====================================
+ */
+
+// Make sure we have a locale value.
+if (locale == "" || locale == null) { locale = Device.locale() }
+
+// Declare the data variables.
+var eventData, locationData, sunData, weatherData, reminderData
+
+// Create global constants.
+const currentDate = new Date()
+const files = FileManager.local()
+
+/*
+ * CONSTRUCTION
+ * ============
+ */
+
+// Set up the widget with padding.
+const widget = new ListWidget()
+const horizontalPad = padding < 10 ? 10 - padding : 10
+const verticalPad = padding < 15 ? 15 - padding : 15
+widget.setPadding(horizontalPad, verticalPad, horizontalPad, verticalPad)
+widget.spacing = 0
+
+const rightevents = await getEvents(WIDGET_CONFIGURATIONS);
+console.log(JSON.stringify(rightevents));
+
+// 
+// drawWidget(widget, rightevents, WIDGET_CONFIGURATIONS);
+
+console.log(`args.widgetParameter: ${JSON.stringify(args.widgetParameter)}`);
+
+
+// Set up the global variables.
+var currentRow = {}
+var currentColumn = {}
+
+// Set up the initial alignment.
+var currentAlignment = alignLeft
+
+// Set up the global ASCII variables.
+var currentColumns = []
+var rowNeedsSetup = false
+
+// It's ASCII time!
+if (typeof items[0] == 'string') {
+  for (line of items[0].split(/\r?\n/)) { await processLine(line) }
+}
+// Otherwise, set up normally.
+else {
+  for (item of items) { await item(currentColumn) }
+}
+
+/*
+ * BACKGROUND DISPLAY
+ * ==================
+ */
+
+// If it's an image background, display it.
+if (imageBackground) {
+  
+  // Determine if our image exists and when it was saved.
+  const path = files.joinPath(files.documentsDirectory(), "weather-cal-image")
+  const exists = files.fileExists(path)
+  
+  // If it exists and an update isn't forced, use the cache.
+  if (exists && (config.runsInWidget || !forceImageUpdate)) {
+    widget.backgroundImage = files.readImage(path)
+  
+  // If it's missing when running in the widget, use a gray background.
+  } else if (!exists && config.runsInWidget) {
+      widget.backgroundColor = Color.gray() 
+    
+  // But if we're running in app, prompt the user for the image.
+  } else {
+      const img = await Photos.fromLibrary()
+      widget.backgroundImage = img
+      files.writeImage(path, img)
+  }
+    
+// If it's not an image background, show the gradient.
+} 
+
+// Finish the widget and show a preview.
+
+if (config.runsInWidget) {
+  Script.setWidget(widget)
+if (widgetPreview == "small") { widget.presentSmall() }
+else if (widgetPreview == "medium") { widget.presentMedium() }
+else if (widgetPreview == "large") { widget.presentLarge() }
+Script.complete()
+} else if (args.widgetParameter === 'callback') {
+  const timestamp = (new Date().getTime() - new Date('2001/01/01').getTime()) / 1000;
+  const callback = new CallbackURL(`${WIDGET_CONFIGURATIONS.callbackCalendarApp}:${timestamp}`);
+  callback.open();
+if (widgetPreview == "small") { widget.presentSmall() }
+else if (widgetPreview == "medium") { widget.presentMedium() }
+else if (widgetPreview == "large") { widget.presentLarge() }
+Script.complete()
+} else {
+  Script.setWidget(widget)
+if (widgetPreview == "small") { widget.presentSmall() }
+else if (widgetPreview == "medium") { widget.presentMedium() }
+else if (widgetPreview == "large") { widget.presentLarge() }
+Script.complete()
+}
+
+/*
+ * ASCII FUNCTIONS
+ * Now isn't this a lot of fun?
+ * ============================
+ */
+
+// Provide the named function.
+function provideFunction(name) {
+  const functions = {
+    space() { return space },
+    left() { return left },
+    right() { return right },
+    center() { return center },
+    date() { return date },
+    greeting() { return greeting },
+    events() { return events },
+    current() { return current },
+    future() { return future },
+    battery() { return battery },
+    sunrise() { return sunrise },
+  }
+  return functions[name]
+}
+
+// Processes a single line of ASCII. 
+async function processLine(lineInput) {
+  
+  // Because iOS loves adding periods to everything.
+  const line = lineInput.replace(/\.+/g,'')
+  
+  // If it's blank, return.
+  if (line.trim() == '') { return }
+  
+  // If it's a line, enumerate previous columns (if any) and set up the new row.
+  if (line[0] == '-' && line[line.length-1] == '-') { 
+    if (currentColumns.length > 0) { await enumerateColumns() }
+    rowNeedsSetup = true
+    return
+  }
+  
+  // If it's the first content row, finish the row setup.
+  if (rowNeedsSetup) { 
+    row(currentColumn)
+    rowNeedsSetup = false 
+  }
+  
+  // If there's a number, this is a setup row.
+  const setupRow = line.match(/\d+/)
+
+  // Otherwise, it has columns.
+  const items = line.split('|')
+  
+  // Iterate through each item.
+  for (var i=1; i < items.length-1; i++) {
+    
+    // If the current column doesn't exist, make it.
+    if (!currentColumns[i]) { currentColumns[i] = { items: [] } }
+    
+    // Now we have a column to add the items to.
+    const column = currentColumns[i].items
+    
+    // Get the current item and its trimmed version.
+    const item = items[i]
+    const trim = item.trim()
+    
+    // If it's not a function, figure out spacing.
+    if (!provideFunction(trim)) { 
+      
+      // If it's a setup row, whether or not we find the number, we keep going.
+      if (setupRow) {
+        const value = parseInt(trim, 10)
+        if (value) { currentColumns[i].width = value }
+        continue
+      }
+      
+      // If it's blank and we haven't already added a space, add one.
+      const prevItem = column[column.length-1]
+      if (trim == '' && (!prevItem || (prevItem && !prevItem.startsWith("space")))) {
+        column.push("space")
+      }
+      
+      // Either way, we're done.
+      continue
+    
+    }
+    
+    // Determine the alignment.
+    const index = item.indexOf(trim)
+    const length = item.slice(index,item.length).length
+    
+    let align
+    if (index > 0 && length > trim.length) { align = "center" }
+    else if (index > 0) { align = "right" }
+    else { align = "left" }
+    
+    // Add the items to the column.
+    column.push(align)
+    column.push(trim)
+  }
+}
+
+// Runs the function names in each column.
+async function enumerateColumns() {
+  if (currentColumns.length > 0) {
+    for (col of currentColumns) {
+      
+      // If it's null, go to the next one.
+      if (!col) { continue }
+      
+      // If there's a width, use the width function.
+      if (col.width) {
+        column(col.width)(currentColumn)
+        
+      // Otherwise, create the column normally.
+      } else {
+        column(currentColumn)
+      }
+      for (item of col.items) {
+        const func = provideFunction(item)()
+        await func(currentColumn)
+      }
+    }
+    currentColumns = []
+  }
+}
+
+/*
+ * LAYOUT FUNCTIONS
+ * These functions manage spacing and alignment.
+ * =============================================
+ */
+
+// Makes a new row on the widget.
+function row(input = null) {
+
+  function makeRow() {
+    currentRow = widget.addStack()
+    currentRow.layoutHorizontally()
+    currentRow.setPadding(0, 0, 0, 0)
+    currentColumn.spacing = 0
+    
+    // If input was given, make a column of that size.
+    if (input > 0) { currentRow.size = new Size(0,input) }
+  }
+  
+  // If there's no input or it's a number, it's being called in the layout declaration.
+  if (!input || typeof input == "number") { return makeRow }
+  
+  // Otherwise, it's being called in the generator.
+  else { makeRow() }
+}
+
+// Makes a new column on the widget.
+function column(input = null) {
+ 
+  function makeColumn() {
+    currentColumn = currentRow.addStack()
+    currentColumn.layoutVertically()
+    currentColumn.setPadding(0, 0, 0, 0)
+    currentColumn.spacing = 0
+    
+    // If input was given, make a column of that size.
+    if (input > 0) { currentColumn.size = new Size(165,0) }
+  }
+  
+  // If there's no input or it's a number, it's being called in the layout declaration.
+  if (!input || typeof input == "number") { return makeColumn }
+  
+  // Otherwise, it's being called in the generator.
+  else { makeColumn() }
+}
+
+// Create an aligned stack to add content to.
+function align(column) {
+  
+  // Add the containing stack to the column.
+  let alignmentStack = column.addStack()
+  alignmentStack.layoutHorizontally()
+  
+  // Get the correct stack from the alignment function.
+  let returnStack = currentAlignment(alignmentStack)
+  returnStack.layoutVertically()
+  return returnStack
+}
+
+// Create a right-aligned stack.
+function alignRight(alignmentStack) {
+  alignmentStack.addSpacer()
+  let returnStack = alignmentStack.addStack()
+  return returnStack
+}
+
+// Create a left-aligned stack.
+function alignLeft(alignmentStack) {
+  let returnStack = alignmentStack.addStack()
+  alignmentStack.addSpacer()
+  return returnStack
+}
+
+// Create a center-aligned stack.
+function alignCenter(alignmentStack) {
+  alignmentStack.addSpacer()
+  let returnStack = alignmentStack.addStack()
+  alignmentStack.addSpacer()
+  return returnStack
+}
+
+// This function adds a space, with an optional amount.
+function space(input = null) { 
+  
+  // This function adds a spacer with the input width.
+  function spacer(column) {
+  
+    // If the input is null or zero, add a flexible spacer.
+    if (!input || input == 0) { column.addSpacer() }
+    
+    // Otherwise, add a space with the specified length.
+    else { column.addSpacer(input) }
+  }
+  
+  // If there's no input or it's a number, it's being called in the column declaration.
+  if (!input || typeof input == "number") { return spacer }
+  
+  // Otherwise, it's being called in the column generator.
+  else { input.addSpacer() }
+}
+
+// Change the current alignment to right.
+function right(x) { currentAlignment = alignRight }
+
+// Change the current alignment to left.
+function left(x) { currentAlignment = alignLeft }
+
+// Change the current alignment to center.
+function center(x) { currentAlignment = alignCenter }
+
+/*
+ * SETUP FUNCTIONS
+ * These functions prepare data needed for items.
+ * ==============================================
+ */
+
+// Set up the eventData object.
+async function setupEvents() {
+  
+  eventData = {}
+  const calendars = eventSettings.selectCalendars
+  const numberOfEvents = eventSettings.numberOfEvents
+
+  // Function to determine if an event should be shown.
+  function shouldShowEvent(event) {
+  
+    // If events are filtered and the calendar isn't in the selected calendars, return false.
+    if (calendars.length && !calendars.includes(event.calendar.title)) { return false }
+
+    // Hack to remove canceled Office 365 events.
+    if (event.title.startsWith("Canceled:")) { return false }
+
+    // If it's an all-day event, only show if the setting is active.
+    if (event.isAllDay) { return eventSettings.showAllDay }
+
+    // Otherwise, return the event if it's in the future.
+    return (event.startDate.getTime() > currentDate.getTime())
+  }
+  
+  // Determine which events to show, and how many.
+  const todayEvents = await CalendarEvent.today([])
+  let shownEvents = 0
+  let futureEvents = []
+  
+  for (const event of todayEvents) {
+    if (shownEvents == numberOfEvents) { break }
+    if (shouldShowEvent(event)) {
+      futureEvents.push(event)
+      shownEvents++
+    }
+  }
+
+  // If there's room and we need to, show tomorrow's events.
+  let multipleTomorrowEvents = false
+  if (eventSettings.showTomorrow && shownEvents < numberOfEvents) {
+  
+    const tomorrowEvents = await CalendarEvent.tomorrow([])
+    for (const event of tomorrowEvents) {
+      if (shownEvents == numberOfEvents) { break }
+      if (shouldShowEvent(event)) {
+      
+        // Add the tomorrow label prior to the first tomorrow event.
+        if (!multipleTomorrowEvents) { 
+          
+          // The tomorrow label is pretending to be an event.
+          futureEvents.push({ title: localizedText.tomorrowLabel.toUpperCase(), isLabel: true })
+          multipleTomorrowEvents = true
+        }
+        
+        // Show the tomorrow event and increment the counter.
+        futureEvents.push(event)
+        shownEvents++
+      }
+    }
+  }
+  
+  // Store the future events, and whether or not any events are displayed.
+  eventData.futureEvents = futureEvents
+  eventData.eventsAreVisible = (futureEvents.length > 0) && (eventSettings.numberOfEvents > 0)
+}
+
+// Set up the reminderData object.
+
+/*
+ * WIDGET ITEMS
+ * These functions display items on the widget.
+ * ============================================
+ */
+
+// Display the date on the widget.
+async function date(column) {
+
+  // Requirements: events (if dynamicDateSize is enabled)
+  if (!eventData && dateSettings.dynamicDateSize) { await setupEvents() }
+
+  // Set up the date formatter and set its locale.
+  let df = new DateFormatter()
+  df.locale = locale
+  
+  // Show small if it's hard coded, or if it's dynamic and events are visible.
+  if (dateSettings.staticDateSize == "small" || (dateSettings.dynamicDateSize && eventData.eventsAreVisible)) {
+    let dateStack = align(column)
+    dateStack.setPadding(padding, 8, padding, padding)
+
+    df.dateFormat = dateSettings.smallDateFormat
+    let dateText = provideText(df.string(currentDate), dateStack, textFormat.smallDate)
+    
+  // Otherwise, show the large date.
+  } else {
+    let dateOneStack = align(column)
+    df.dateFormat = dateSettings.largeDateLineOne
+    let dateOne = provideText(df.string(currentDate), dateOneStack, textFormat.largeDate1)
+    dateOneStack.setPadding(padding/2, 8, 0, padding)
+    
+    let dateTwoStack = align(column)
+    df.dateFormat = dateSettings.largeDateLineTwo
+    let dateTwo = provideText(df.string(currentDate), dateTwoStack, textFormat.largeDate2)
+    dateTwoStack.setPadding(0, 8, padding, padding)
+    
+//     let dateThreeStack = align(dateOneStack)
+//     dateThreeStack.layoutHorizontally()
+//     let dateThree = drawWidget(widget, rightevents, WIDGET_CONFIGURATIONS);
+//     dateThreeStack.setPadding(0,8, padding, padding)
+  }
+}
+
+// Display a time-based greeting on the widget.
+
+
+async function rightsideevents(column) {
+  
+// function drawWidget(widget, events, WIDGET_CONFIGURATIONS) {
+  const mainStackrs = column.addStack();
+  mainStackrs.layoutHorizontally();
+  mainStackrs.spacing = 30;
+  mainStackrs.size = new Size(150,150)
+
+// Left stack contains date, and all day events
+  const leftStack = mainStackrs.addStack();
+  leftStack.layoutVertically();
+
+// Right stack contains calendar events
+  const rightStack = mainStackrs.addStack();
+  rightStack.layoutVertically();
+
+  drawRightStack(rightStack, rightevents, WIDGET_CONFIGURATIONS);
+}
+
+
+//    const rseventsstack = column.addStack()
+//     rseventsstack.layoutVertically()
+//     rseventsstack.setPadding(0, 0, 0, 0)
+//      rseventsstack.size = new Size(0,0)
+//     
+//     const mainrsstack = align(rseventsstack)
+//   
+//   const dateThree = mainrsstack.addImage(drawWidget(widget, rightevents, WIDGET_CONFIGURATIONS))
+// 
+//    mainConditionStack.addSpacer(5)
+//       mainConditionStack.layoutHorizontally()
+//       mainConditionStack.centerAlignContent()
+
+
+
+// Display events on the widget.
+
+
+async function events(column) {
+
+  // Requirements: events
+  if (!eventData) { await setupEvents() }
+
+  // If no events are visible, figure out what to do.
+  if (!eventData.eventsAreVisible) { 
+    const display = eventSettings.noEventBehavior
+    
+    // If it's a greeting, let the greeting function handle it.
+    if (display == "greeting") { return await greeting(column) }
+    
+    // If it's a message, get the localized text.
+    if (display == "message" && localizedText.noEventMessage.length) {
+      const messageStack = align(column)
+      messageStack.setPadding(padding, 8, padding, padding)
+      provideText(localizedText.noEventMessage, messageStack, textFormat.noEvents)
+    }
+    
+    // Whether or not we displayed something, return here.
+    return
+  }
+  
+  // Set up the event stack.
+  let eventStack = column.addStack()
+  eventStack.layoutVertically()
+  const todaySeconds = Math.floor(currentDate.getTime() / 1000) - 978307200
+  eventStack.url = 'calshow:' + todaySeconds
+  
+  // If there are no events and we have a message, show it and return.
+  if (!eventData.eventsAreVisible && localizedText.noEventMessage.length) {
+    let message = provideText(localizedText.noEventMessage, eventStack, textFormat.noEvents)
+    eventStack.setPadding(padding, 8, padding, padding)
+    return
+  }
+  
+  // If we're not showing the message, don't pad the event stack.
+  eventStack.setPadding(0, 0, 0, 0)
+  
+  // Add each event to the stack.
+  var currentStack = eventStack
+  const futureEvents = eventData.futureEvents
+  const showCalendarColor = eventSettings.showCalendarColor
+  const colorShape = showCalendarColor.includes("circle") ? "circle" : "rectangle"
+    
+  for (let i = 0; i < futureEvents.length; i++) {
+    
+    const event = futureEvents[i]
+    const bottomPadding = (padding-10 < 0) ? 0 : padding-10
+    
+    // If it's the tomorrow label, change to the tomorrow stack.
+    if (event.isLabel) {
+      let tomorrowStack = column.addStack()
+      tomorrowStack.layoutVertically()
+      const tomorrowSeconds = Math.floor(currentDate.getTime() / 1000) - 978220800
+      tomorrowStack.url = 'calshow:' + tomorrowSeconds
+      currentStack = tomorrowStack
+      
+      // Mimic the formatting of an event title, mostly.
+      const eventLabelStack = align(currentStack)
+      const eventLabel = provideText(event.title, eventLabelStack, textFormat.eventLabel)
+      eventLabelStack.setPadding(0, 8, padding, padding)
+      continue
+    }
+    
+    const titleStack = align(currentStack)
+    titleStack.layoutHorizontally()
+    
+    // If we're showing a color, and it's not shown on the right, add it to the left.
+    if (showCalendarColor.length && !showCalendarColor.includes("right")) {
+      let colorItemText = provideTextSymbol(colorShape) + " "
+      let colorItem = provideText(colorItemText, titleStack, textFormat.eventTitle)
+      colorItem.textColor = event.calendar.color
+    }
+
+    const title = provideText(event.title.trim(), titleStack, textFormat.eventTitle)
+    titleStack.setPadding(0, 8, event.isAllDay ? padding : padding/5, padding)
+    
+    // If we're showing a color on the right, show it.
+    if (showCalendarColor.length && showCalendarColor.includes("right")) {
+      let colorItemText = " " + provideTextSymbol(colorShape)
+      let colorItem = provideText(colorItemText, titleStack, textFormat.eventTitle)
+      colorItem.textColor = event.calendar.color
+    }
+  
+    // If there are too many events, limit the line height.
+    if (futureEvents.length >= 3) { title.lineLimit = 1 }
+
+    // If it's an all-day event, we don't need a time.
+    if (event.isAllDay) { continue }
+    
+    // Format the time information.
+    let timeText = formatTime(event.startDate)
+    
+    // If we show the length as time, add an en dash and the time.
+    if (eventSettings.showEventLength == "time") { 
+      timeText += "–" + formatTime(event.endDate) 
+      
+    // If we should it as a duration, add the minutes.
+    } else if (eventSettings.showEventLength == "duration") {
+      const duration = (event.endDate.getTime() - event.startDate.getTime()) / (1000*60)
+      const hours = Math.floor(duration/60)
+      const minutes = Math.floor(duration % 60)
+      const hourText = hours>0 ? hours + localizedText.durationHour : ""
+      const minuteText = minutes>0 ? minutes + localizedText.durationMinute : ""
+      const showSpace = hourText.length && minuteText.length
+      timeText += " \u2022 " + hourText + (showSpace ? " " : "") + minuteText
+    }
+
+    const timeStack = align(currentStack)
+    const time = provideText(timeText, timeStack, textFormat.eventTime)
+    timeStack.setPadding(0, 8, padding, padding)
+  }
+}
+
+// Display reminders on the widget.
+
+
+
+
+// Set up the gradient for the widget background.
+
+
+// Set up the locationData object.
+
+
+// Set up the sunData object.
+
+
+// Set up the weatherData object.
+
+
+
+// Display the current weather.
+
+
+// Display upcoming weather.
+
+
+
+// Return a text-creation function.
+function text(input = null) {
+
+  function displayText(column) {
+  
+    // Don't do anything if the input is blank.
+    if (!input || input == "") { return }
+  
+    // Otherwise, add the text.
+    const textStack = align(column)
+    textStack.setPadding(padding, padding, padding, padding)
+    const textDisplay = provideText(input, textStack, textFormat.customText)
+  }
+  return displayText
+}
+
+// Add a battery element to the widget; consisting of a battery icon and percentage.
+
+// Show the sunrise or sunset time.
+
+
+/*
+ * HELPER FUNCTIONS
+ * These functions perform duties for other functions.
+ * ===================================================
+ */
+
+// Tints icons if needed.
+function tintIcon(icon,format) {
+  if (!tintIcons) { return }
+  icon.tintColor = new Color(format.color || textFormat.defaultText.color)
+}
+
+// Determines if the provided date is at night.
+
+
+// Determines if two dates occur on the same day
+function sameDay(d1, d2) {
+  return d1.getFullYear() === d2.getFullYear() &&
+    d1.getMonth() === d2.getMonth() &&
+    d1.getDate() === d2.getDate()
+}
+
+// Returns the number of minutes between now and the provided date.
+function closeTo(time) {
+  return Math.abs(currentDate.getTime() - time) / 60000
+}
+
+// Format the time for a Date input.
+function formatTime(date) {
+  let df = new DateFormatter()
+  df.locale = locale
+  df.useNoDateStyle()
+  df.useShortTimeStyle()
+  return df.string(date)
+}
+
+// Provide a text symbol with the specified shape.
+function provideTextSymbol(shape) {
+
+  // Rectangle character.
+  if (shape.startsWith("rect")) {
+    return "\u2759"
+  }
+  // Circle character.
+  if (shape == "circle") {
+    return "\u2B24"
+  }
+  // Default to the rectangle.
+  return "\u2759" 
+}
+
+
+
+
+// Provide a symbol based on the condition.
+function provideConditionSymbol(cond,night) {
+  
+  // Define our symbol equivalencies.
+  let symbols = {
+  
+    // Thunderstorm
+    "2": function() { return "cloud.bolt.rain.fill" },
+    
+    // Drizzle
+    "3": function() { return "cloud.drizzle.fill" },
+    
+    // Rain
+    "5": function() { return (cond == 511) ? "cloud.sleet.fill" : "cloud.rain.fill" },
+    
+    // Snow
+    "6": function() { return (cond >= 611 && cond <= 613) ? "cloud.snow.fill" : "snow" },
+    
+    // Atmosphere
+    "7": function() {
+      if (cond == 781) { return "tornado" }
+      if (cond == 701 || cond == 741) { return "cloud.fog.fill" }
+      return night ? "cloud.fog.fill" : "sun.haze.fill"
+    },
+    
+    // Clear and clouds
+    "8": function() {
+      if (cond == 800 || cond == 801) { return night ? "moon.stars.fill" : "sun.max.fill" }
+      if (cond == 802 || cond == 803) { return night ? "cloud.moon.fill" : "cloud.sun.fill" }
+      return "cloud.fill"
+    }
+  }
+  
+  // Find out the first digit.
+  let conditionDigit = Math.floor(cond / 100)
+  
+  // Get the symbol.
+  return SFSymbol.named(symbols[conditionDigit]()).image
+}
+
+// Provide a font based on the input.
+function provideFont(fontName, fontSize) {
+  const fontGenerator = {
+    "ultralight": function() { return Font.ultraLightSystemFont(fontSize) },
+    "light": function() { return Font.lightSystemFont(fontSize) },
+    "regular": function() { return Font.regularSystemFont(fontSize) },
+    "medium": function() { return Font.mediumSystemFont(fontSize) },
+    "semibold": function() { return Font.semiboldSystemFont(fontSize) },
+    "bold": function() { return Font.boldSystemFont(fontSize) },
+    "heavy": function() { return Font.heavySystemFont(fontSize) },
+    "black": function() { return Font.blackSystemFont(fontSize) },
+    "italic": function() { return Font.italicSystemFont(fontSize) }
+  }
+  
+  const systemFont = fontGenerator[fontName]
+  if (systemFont) { return systemFont() }
+  return new Font(fontName, fontSize)
+}
+ 
+// Add formatted text to a container.
+function provideText(string, container, format) {
+  const textItem = container.addText(string)
+  const textFont = format.font || textFormat.defaultText.font
+  const textSize = format.size || textFormat.defaultText.size
+  const textColor = format.color || textFormat.defaultText.color
+  
+  textItem.font = provideFont(textFont, textSize)
+  textItem.textColor = new Color(textColor)
+  return textItem
+}
+
+
+// NEW NEW SET EVENTS
+
+async function getEvents({ numHours, calendars }) {
+  const todayEvents = await CalendarEvent.today([]);
+  const tomorrowEvents = await CalendarEvent.tomorrow([]);
+  const combinedEvents = todayEvents.concat(tomorrowEvents);
+
+  let now = new Date();
+  now = now.addMinutes(now.getMinutes() * -1);
+  const inNumHours = now.addHours(numHours);
+
+  const eventsByHour = {};
+
+  combinedEvents.forEach((event) => {
+    const start = new Date(event.startDate);
+    const end = new Date(event.endDate);
+
+    // Filter for events that:
+    //   - start between now and numHours from now
+    //   - are in the specified array of calendars (if any)
+    if (start <= inNumHours && end > now && (calendars.length === 0 || calendars.includes(event.calendar.title))) {
+      if (event.isAllDay) { // All-day events
+        if (!eventsByHour['all-day']) {
+          eventsByHour['all-day'] = [];
+        }
+        eventsByHour['all-day'].push({
+          title: event.title,
+          color: `#${event.calendar.color.hex}`,
+        });
+      } else if (start < now && end > now) { // Events that started before the current hour, but have not yet ended
+        const hourKey = HOUR_FORMAT.format(now);
+
+        if (!eventsByHour[hourKey]) {
+          eventsByHour[hourKey] = [];
+        }
+
+        let eventDuration = Math.floor(((end - start) / 1000) / 60) - (Math.floor(((now - start) / 1000) / 60));
+
+        const eventObj = {
+          start,
+          end,
+          startMinute: start.getMinutes(),
+          title: event.title,
+          color: `#${event.calendar.color.hex}`,
+          duration: eventDuration,
+        };
+
+        eventsByHour[hourKey].push(eventObj);
+      } else { // Events that start between now and inNumHours
+        const hourKey = HOUR_FORMAT.format(start);
+
+        if (!eventsByHour[hourKey]) {
+          eventsByHour[hourKey] = [];
+        }
+
+        let eventDuration = Math.floor(((end - start) / 1000) / 60);
+
+        const eventObj = {
+          start,
+          end,
+          startMinute: start.getMinutes(),
+          title: event.title,
+          color: `#${event.calendar.color.hex}`,
+          duration: eventDuration,
+        };
+
+        eventsByHour[hourKey].push(eventObj);
+      }
+    }
+  });
+
+  return eventsByHour;
+}
+
+/*
+ * DRAWING FUNCTIONS
+ * These functions draw onto a canvas.
+ * ===================================
+ */
+
+// Draw the vertical line in the tomorrow view.
+function drawVerticalLine(color, height) {
+  
+  const width = 2
+  
+  let draw = new DrawContext()
+  draw.opaque = false
+  draw.respectScreenScale = true
+  draw.size = new Size(width,height)
+  
+  let barPath = new Path()
+  const barHeight = height
+  barPath.addRoundedRect(new Rect(0, 0, width, height), width/2, width/2)
+  draw.addPath(barPath)
+  draw.setFillColor(color)
+  draw.fillPath()
+  
+  return draw.getImage()
+}
+
+
+
+// function drawWidget(widget, events, WIDGET_CONFIGURATIONS) {
+//   const mainStack = widget.addStack();
+//   mainStack.layoutHorizontally();
+//   mainStack.spacing = 30;
+// 
+  // Left stack contains date, and all day events
+//   const leftStack = mainStack.addStack();
+//   leftStack.layoutVertically();
+// 
+  // Right stack contains calendar events
+//   const rightStack = mainStack.addStack();
+//   rightStack.layoutVertically();
+// 
+//   drawRightStack(rightStack, events, WIDGET_CONFIGURATIONS);
+// }
+
+
+function drawRightStack(stack, events, {
+  defaultTextColor,
+  font,
+  largeTextSize,
+  eventsTextColor,
+  numHours,
+  widgetHeight,
+  widgetWidth,
+  padding,
+  eventsLeftPadding,
+  eventsRounding,
+  lineHeight,
+  lineColor,
+}) {
+  const halfHourEventHeight = widgetHeight / (numHours * 2);
+
+  const draw = new DrawContext();
+  draw.opaque = false;
+  draw.respectScreenScale = false;
+  draw.size = new Size(widgetWidth, widgetHeight);
+
+  const currentDate = new Date();
+
+  // Loop through all the hours and draw the lines
+  for (let i = 0; i < numHours; i++) {
+
+    const currentHourDate = currentDate.addHours(i);
+    const currentHourText = HOUR_FORMAT.format(currentHourDate);
+
+    const topPointY = halfHourEventHeight * 2 * i;
+    const midPointY = topPointY + halfHourEventHeight;
+
+    // Draw line at the hour
+    const topPath = new Path();
+    topPath.addRect(new Rect(eventsLeftPadding - padding, topPointY, widgetWidth, lineHeight));
+    draw.addPath(topPath);
+    draw.setFillColor(lineColor);
+    draw.fillPath();
+
+    // Draw line at the half hour
+    const middlePath = new Path();
+    middlePath.addRect(new Rect(eventsLeftPadding - padding, midPointY, widgetWidth, lineHeight / 2));
+    draw.addPath(middlePath);
+    draw.setFillColor(lineColor);
+    draw.fillPath();
+
+    // Draw hour text
+    draw.setTextColor(defaultTextColor);
+    draw.setFont(new Font(font, largeTextSize));
+    draw.drawText(`${currentHourText}`, new Point(0, topPointY));
+  }
+
+  // Loop through all the hours and draw the events (on top of the lines)
+  for (let i = 0; i < numHours; i++) {
+
+    const currentHourDate = currentDate.addHours(i);
+    const currentHourText = HOUR_FORMAT.format(currentHourDate);
+
+    const topPointY = halfHourEventHeight * 2 * i;
+    const midPointY = topPointY + halfHourEventHeight;
+
+    // Draw events for this hour (if any)
+    const hourEvents = events[currentHourText];
+    if (hourEvents) {
+      for (let j = 0; j < hourEvents.length; j++) {
+        // TODO - determine width of events based on num events in hour
+        const { startMinute, title, color, duration } = hourEvents[j];
+
+        // Determine top Y of event
+        const eventRectY = topPointY + Math.floor((startMinute * halfHourEventHeight) / 30);
+
+        // Determine height of events
+        const eventHeight = Math.floor((duration * halfHourEventHeight) / 30);
+
+        const eventRect = new Rect(
+          eventsLeftPadding + padding,
+          eventRectY,
+          widgetWidth - (eventsLeftPadding + padding * 3),
+          eventHeight
+        );
+        const eventPath = new Path();
+        eventPath.addRoundedRect(eventRect, eventsRounding, eventsRounding);
+
+        draw.addPath(eventPath);
+        draw.setFillColor(new Color(color));
+        draw.fillPath();
+
+        // Draw event name text
+        draw.setTextColor(eventsTextColor);
+        draw.setFont(new Font(font, largeTextSize));
+        draw.drawText(`${title}`, new Point(eventsLeftPadding + padding + padding, eventRectY + padding / 2));
+      }
+    }
+  }
+
+  // Draw line at the current time
+  const currentMinute = new Date().getMinutes();
+  let currentMinuteY = (currentMinute * halfHourEventHeight) / 30;
+  const currentMinutePath = new Path();
+  currentMinutePath.addRect(new Rect(eventsLeftPadding, currentMinuteY, widgetWidth, lineHeight));
+  draw.addPath(currentMinutePath);
+  draw.setFillColor(Color.red());
+  draw.fillPath();
+
+  // Put the content on the widget stack
+  const drawn = draw.getImage();
+  stack.addImage(drawn);
+}
+
