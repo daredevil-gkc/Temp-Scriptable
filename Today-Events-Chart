@@ -173,9 +173,9 @@ const items = [
   
   row,
      column,
-    space(20),
+    space(18),
      date,
-    space(15),
+    space(9),
      events,
   
   column(175),
